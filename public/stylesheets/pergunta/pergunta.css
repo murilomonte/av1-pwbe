@@ -1,0 +1,46 @@
+.main-pergunta {
+    margin: 0px 10px;
+
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    gap: 10px;
+}
+
+@media screen and (max-width: 950px) {
+    .main-pergunta {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pergunta,
+.status {
+    background-color: aliceblue;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.resposta-item {
+    display: flex;
+    gap: 20px;
+    background-color: rgb(212, 229, 245);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.resposta-item:hover, .resposta-item > input {
+    cursor: pointer;
+}
+
+.pergunta-respostas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pergunta-respostas .correta {
+    background-color: rgb(146, 253, 196);
+}
+
+.pergunta-respostas .errada {
+    background-color: rgb(253, 150, 146);
+}

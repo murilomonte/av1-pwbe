@@ -1,0 +1,28 @@
+<main class="main-pergunta">
+    <section class="pergunta">
+        <h1>Pergunta</h1>
+        <p class="pergunta-texto">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis voluptate voluptates repellat architecto
+            autem quaerat excepturi rerum suscipit modi tempora, expedita qui, fugiat quia perferendis provident nisi,
+            ipsum quae corrupti!
+        </p>
+        <form action="/pergunta" method="post" class="pergunta-respostas">
+            <label for="ir0" class="resposta-item correta">
+                <input type="radio" name="resposta" id="ir0" required>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit
+            </label>
+
+            <label for="ir1" class="resposta-item errada">
+                <input type="radio" name="resposta" id="ir1" required>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit
+            </label>
+
+            <label for="ir2" class="resposta-item">
+                <input type="radio" name="resposta" id="ir2" required>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit
+            </label>
+            <button type="submit" class="main-button">Próximo</button>
+        </form>
+    </section>
+    <%- include('../partials/status') %>
+</main>

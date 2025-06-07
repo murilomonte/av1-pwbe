@@ -1,0 +1,14 @@
+/* header */
+@import url('header/header.css');
+
+/* global */
+@import url('global/global.css');
+
+/* home */
+@import url('home/home.css');
+
+/* status */
+@import url('status/status.css');
+
+/* pergunta */
+@import url('pergunta/pergunta.css');
