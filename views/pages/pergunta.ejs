@@ -2,27 +2,67 @@
     <section class="pergunta">
         <h1>Pergunta</h1>
         <p class="pergunta-texto">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis voluptate voluptates repellat architecto
-            autem quaerat excepturi rerum suscipit modi tempora, expedita qui, fugiat quia perferendis provident nisi,
-            ipsum quae corrupti!
+            <%= question.description %>
         </p>
-        <form action="/pergunta" method="post" class="pergunta-respostas">
-            <label for="ir0" class="resposta-item correta">
-                <input type="radio" name="resposta" id="ir0" required>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit
-            </label>
-
-            <label for="ir1" class="resposta-item errada">
-                <input type="radio" name="resposta" id="ir1" required>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit
-            </label>
-
-            <label for="ir2" class="resposta-item">
-                <input type="radio" name="resposta" id="ir2" required>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit
-            </label>
-            <button type="submit" class="main-button">Responder</button>
+        <form class="pergunta-respostas" id="pergunta-form">
+            <input type="hidden" name="question_id" value="<%- question.id %>">
+            <% for (let i=0; i < question.alternatives.length; i++) {%>
+                <label for="in<%- question.alternatives[i].id %>" class="resposta-item"
+                    id="res<%- question.alternatives[i].id %>">
+                    <input type="radio" name="alternative_id" value="<%- question.alternatives[i].id %>"
+                        id="in<%- question.alternatives[i].id %>" required>
+                    <%= question.alternatives[i].description %>
+                </label>
+                <% } %>
+                    <button type="submit" class="main-button" id="answer-button">Responder</button>
         </form>
+        <a href="/pergunta" id="next-question-button" class="invisible main-button">Próxima questão</a>
     </section>
     <%- include('../partials/status') %>
+
+        <script>
+            let perguntaForm = document.querySelector('#pergunta-form');
+
+            perguntaForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const form = e.target;
+                const formData = new FormData(form);
+
+                // Converte para um objeto comum antes de serializar
+                let body = {}
+                formData.forEach((value, key) => {
+                    body[key] = value;
+                })
+
+                const res = await fetch('/pergunta', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                });
+
+                const data = await res.json();
+
+                const selected_alternative = document.querySelector(`#res${data.selected_alternative}`);
+                const correct_alternative = document.querySelector(`#res${data.correct_alternative}`);
+
+                if (data.is_correct) {
+                    selected_alternative.classList.add("correta");
+                } else {
+                    selected_alternative.classList.add("errada");
+                    correct_alternative.classList.add("corrigida")
+                }
+
+                // Desabilita o botão
+                document.querySelector('#answer-button').classList.add('invisible')
+                document.querySelector('#next-question-button').classList.remove('invisible')
+
+                // Desabilita o form, impedindo uma nova tentativa
+                // Fraco, pois ainda é possível editar manualmente
+                perguntaForm.inert = true;
+            });
+        </script>
 </main>

@@ -29,12 +29,17 @@ p {
     margin-bottom: 20px;
 }
 
+.invisible {
+    display: none;
+}
+
 .container {
     max-width: 1000px;
     margin: auto;
 }
 
 .main-button {
+    margin: 10px 0px;
     background-color: rgb(128, 172, 213);
     padding: 10px 20px;
     border-radius: 10px;
