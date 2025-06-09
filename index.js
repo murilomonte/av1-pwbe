@@ -15,6 +15,9 @@ app.use(expressLayouts);
 
 app.use(express.static('public'));
 
+// Para poder aceitar requisições json
+app.use(express.json());
+
 app.use(express.urlencoded({ extended: false }))
 
 app.use('/', router)
