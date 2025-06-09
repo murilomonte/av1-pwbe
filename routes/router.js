@@ -37,9 +37,9 @@ router.post('/pergunta', (req, res) => {
     })
 });
 
-/* /perfil (get) (só se der) */
-router.get('/perfil', (req, res) => {
-    res.send('perfil')
+/* /ranking (get) */
+router.get('/ranking', (req, res) => {
+    res.send('ranking')
 });
 
 module.exports = router;
