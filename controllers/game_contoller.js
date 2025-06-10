@@ -1,22 +1,33 @@
 const Question = require('../models/question.js');
+const User = require('../models/user.js');
 
-exports.getQuestion = function () {
+exports.getQuestion = async function () {
     // TODO: adicionar verificações
 
     // Pede para o Question uma questão
     const question = new Question();
-    const questionItem = question.getQuestion();
+    
+    try {
+        const questionItem = await question.getQuestion();
+        const alternatives = await question.getAlternativesById(questionItem.id);
+    
+        let questionObject = question.toMap(questionItem.id, questionItem.description, alternatives);
+        
+        return { success: true, result: questionObject};
+    } catch (error) {
+        return { success: false, result: error};
+    }
 
-    // Devolve para o router
-    return questionItem;
 }
 
-exports.newUser = function (req, res, name) {
+exports.newUser = function (name) {
     // TODO: adicionar verificações
 
     // Acessa o User e adiciona um novo usuário
+    const user = new User();
+    let response = user.create(name);
 
-    // Redirecion para uma nova pergunta
+    return response
 }
 
 
@@ -27,6 +38,7 @@ exports.newUser = function (req, res, name) {
  */
 exports.answerQuestion = function (question_id, selected_alternative) {
     // TODO: adicionar verificações
+    // Se o id é 
 
     // TODO: Verifica se o usuário já respondeu a questão
 
@@ -52,7 +64,7 @@ exports.answerQuestion = function (question_id, selected_alternative) {
             }
         }
     }
-    // TODO: Acessa o User e atualiza o status do jogador.
+    // TODO: Acessa o Answer e atualiza o status do jogador.
 
     // Retornar um objeto informando se está correto e o id da alternativa
     return {
