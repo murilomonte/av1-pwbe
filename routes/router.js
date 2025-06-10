@@ -11,16 +11,50 @@ router.get('/', (req, res) => {
 });
 
 /* /start (get) */
-router.post('/start', gameContoller.newUser);
+router.post('/start', async (req, res) => {
+    let userName = req.body.userName;
+    let userResponse = gameContoller.newUser(userName);
+
+    if (userResponse.success) {
+        let questionResponse = await gameContoller.getQuestion();
+
+        if (questionResponse.success) {
+            res.render('pages/pergunta', {
+                title: "pergunta",
+                question: questionResponse.result
+            });
+        } else {
+            res.render('pages/error', {
+                title: "error",
+                message: questionResponse.result
+            });
+        }
+    } else {
+        res.render('pages/error', {
+            title: "error",
+            message: userResponse.message
+        });
+    };
+});
 
 /* /pergunta (get) */
-router.get('/pergunta', (req, res) => {
+router.get('/pergunta', async (req, res) => {
     let question = gameContoller.getQuestion();
+    console.log(question)
 
-    res.render('pages/pergunta', {
-        title: "pergunta",
-        question: question
-    })
+    let questionResponse = await gameContoller.getQuestion();
+
+    if (questionResponse.success) {
+        res.render('pages/pergunta', {
+            title: "pergunta",
+            question: questionResponse.result
+        });
+    } else {
+        res.render('pages/error', {
+            title: "error",
+            message: questionResponse.result
+        });
+    }
 });
 
 /* /pergunta (post) */

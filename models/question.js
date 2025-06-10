@@ -97,28 +97,42 @@ let questions = [
     }
 ];
 
+const pool = require('../db/database.js');
+
 /**
  * Classe que representa uma questão
  */
 class Question {
-    getQuestion() {
+
+    async getQuestion() {
         // TODO: adicionar verificações
 
-        let question = questions[Math.floor(Math.random() * questions.length)]
-        return question;
+        // Retorna uma question que o usuário não completou
+        let userId = 1;
+        let question_query = 'SELECT q.* FROM Questions q WHERE q.id NOT IN (SELECT a.question_fk FROM Answers a WHERE a.user_fk = $1) ORDER BY RANDOM() LIMIT 1';
+
+        let question_result = await pool.query(question_query, [userId])
+
+        return question_result.rows[0];
     }
 
-    getAlternativesById(question_id) {
+    async getAlternativesById(question_id) {
         // TODO: adicionar verificações
 
-        // TODO: Acessa o banco e retorna as alternativas
+        // Rertorna as alternativas da questão
+        const alternative_query = 'SELECT * FROM Alternatives as a WHERE a.question_fk = $1'
+        let alternatives_result = await pool.query(alternative_query, [question_id])
+        return alternatives_result.rows;
 
-        // TODO: Percorre as alternativas e as retorna
-        for (let i in questions) {
-            if (questions[i].id == question_id) {
-                return questions[i].alternatives;
-            }
+    }
+
+    toMap(id, description, alternatives) {
+        let questionObject = {
+            id: id,
+            description: description,
+            alternatives: alternatives
         }
+        return questionObject
     }
 }
 

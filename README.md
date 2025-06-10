@@ -7,3 +7,4 @@ Jogo quiz simples. Nele o usuário pode:
 - Ganhar pontos
 - Ver o ranking de jogadores com mais acertos
 
+Cada jogador responde um número x de perguntas.
