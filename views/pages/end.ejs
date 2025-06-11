@@ -1,0 +1,9 @@
+<main class="main-end">
+    <h1>Pabéns!</h1>
+    <p>Você terminou o jogo com <%- score.correct %> acertos e <%- score.wrong %> erros</p>
+    <p>Insira seu nome para salvar seu progresso no ranking!</p>
+    <form action="/end" method="post">
+        <input type="text" name="userName" id="iUserName" required>
+        <input type="submit" class="main-button" value="Registrar">
+    </form>
+</main>

@@ -1,19 +1,11 @@
-let user = []
+const pool = require("../db/database");
 
 class User {
     // Cria um novo usuário
-    create(name) {
-        if (name.length > 10) {
-            return { success: false, message: 'O nome não pode ter mais de 10 caracteres' }
-        } else {
-            let randomId = Math.floor(Math.random() * 100);
-            // TODO: realizar insert no banco
-            user.push({
-                "id": randomId,
-                "name": this.name
-            })
-            return { success: true, message: 'Usuário cadastrado com sucesso' };
-        }
+    async create(name) {
+        const userQuery = "INSERT INTO users(name) VALUES ($1) RETURNING id, name";
+        let userResult = await pool.query(userQuery, [name]);
+        return userResult.rows[0];
     }
 }
 

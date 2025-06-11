@@ -12,7 +12,7 @@ perguntaForm.addEventListener('submit', async (e) => {
         body[key] = value;
     })
 
-    const res = await fetch('/pergunta', {
+    const res = await fetch('/question', {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

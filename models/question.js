@@ -104,16 +104,21 @@ const pool = require('../db/database.js');
  */
 class Question {
 
-    async getQuestion() {
-        // TODO: adicionar verificações
+    /**
+     * Returns a random question
+     */
+    async getQuestion(qnt = 1) {
+        let question_query = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT $1';
+        let question_result = await pool.query(question_query, [qnt])
+        let question_list = [];
 
-        // Retorna uma question que o usuário não completou
-        let userId = 1;
-        let question_query = 'SELECT q.* FROM Questions q WHERE q.id NOT IN (SELECT a.question_fk FROM Answers a WHERE a.user_fk = $1) ORDER BY RANDOM() LIMIT 1';
+        for (let i in question_result.rows) {
+            let question = question_result.rows[i];
+            let alternatives = await this.getAlternativesById(question.id);
 
-        let question_result = await pool.query(question_query, [userId])
-
-        return question_result.rows[0];
+            question_list.push(this.toMap(question.id, question.description, alternatives))
+        }
+        return question_list;
     }
 
     async getAlternativesById(question_id) {
