@@ -2,7 +2,7 @@ const Question = require('../models/question.js');
 const User = require('../models/user.js');
 const Answer = require('../models/answer.js');
 
-const player = {
+let player = {
     id: undefined, // Pode ser adicionado depois também
     name: undefined, // Assim não precisa definir o undefined
     score: {
@@ -13,12 +13,27 @@ const player = {
     answers: []
 }
 
-const questions = [];
+let questions = [];
 
-const answeredQuestions = [];
+let answeredQuestions = [];
 
 const start = async function (req, res) {
     try {
+        // Zera o user e as questions
+        player = {
+            id: undefined,
+            name: undefined,
+            score: {
+                questions: 0,
+                correct: 0,
+                wrong: 0
+            },
+            answers: []
+        };
+
+        questions = [];
+        answeredQuestions = [];
+
         // Povoa a lista de questões
         const question = new Question();
         let questionList = await question.getQuestion(10);
