@@ -3,8 +3,8 @@ const User = require('../models/user.js');
 const Answer = require('../models/answer.js');
 
 let player = {
-    id: undefined, // Pode ser adicionado depois também
-    name: undefined, // Assim não precisa definir o undefined
+    id: undefined,
+    name: undefined,
     score: {
         questions: 0,
         correct: 0,
