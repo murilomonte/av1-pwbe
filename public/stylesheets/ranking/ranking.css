@@ -1,0 +1,21 @@
+.main-ranking {
+    margin: 0px 10px;
+    background-color: aliceblue;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.ranking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ranking-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    background-color: rgb(212, 229, 245);
+    padding: 20px;
+    border-radius: 10px;
+}

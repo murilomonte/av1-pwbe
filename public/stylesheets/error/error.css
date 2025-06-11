@@ -1,0 +1,10 @@
+.main-error {
+    margin: 0px 10px;
+    background-color: aliceblue;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.error-message {
+    margin-bottom: 20px;
+}

@@ -1,0 +1,15 @@
+.main-end {
+    max-width: 500px;
+    margin: auto;
+    background-color: aliceblue;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+.user-name-input {
+    border-radius: 10px;
+    outline: none;
+    background-color: rgb(212, 229, 245);
+    border: 0;
+    padding: 10px;
+}
