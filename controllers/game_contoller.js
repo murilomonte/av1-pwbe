@@ -39,35 +39,43 @@ const start = async function (req, res) {
 };
 
 const end = async function (req, res) {
-    // Cria um novo user com o nome passado
-    let userName = req.body.userName;
-    const user = new User();
+    try {
+        // Cria um novo user com o nome passado
+        let userName = req.body.userName;
+        const user = new User();
 
-    let userData = await user.create(userName);
+        let userData = await user.create(userName);
 
-    // Adiciona o nome do usuário ao objeto e seu respectivo id
-    player.id = userData.id;
-    player.name = userData.name;
+        // Adiciona o nome do usuário ao objeto e seu respectivo id
+        player.id = userData.id;
+        player.name = userData.name;
 
-    for (let i in player.answers) {
-        player.answers[i].user_fk = player.id;
+        for (let i in player.answers) {
+            player.answers[i].user_fk = player.id;
+        }
+
+        // Salva as respostas no banco para o respectivo usuário
+        const answer = new Answer();
+        let anwersData = await answer.answerQuestions(player.answers);
+
+        // Redireciona para uma pergunta, enviando o objeto do usuário e a questão com suas respectivas alternativas
+        res.redirect('ranking');
+    } catch (error) {
+        res.render('pages/error', {
+            title: "error",
+            message: error
+        });
     }
-
-    console.log(player.answers);
-    
-    // Salva as respostas no banco para o respectivo usuário
-    const answer = new Answer();
-    let anwersData = await answer.answerQuestions(player.answers);
 }
 
 const getQuestion = function (req, res) {
     try {
-        if (questions.length > 0) {
+        if (player.answers.length > 1 && questions.length == 0) {
+            res.render('pages/end', { title: "Fim!", score: player.score }); // TODO: criar página
+        } else {
             let question = questions.pop();
             answeredQuestions.push(question)
             res.render('pages/pergunta', { title: "Pergunta!", question: question, score: player.score })
-        } else {
-            res.render('pages/end', { title: "Fim!", score: player.score }); // TODO: criar página
         }
     } catch (error) {
         // TODO: Mudar pra redirect
@@ -114,8 +122,6 @@ const answerQuestion = function (req, res) {
 
         player.score.questions++;
 
-        console.log(player)
-        
         // TODO: mudar variáveis para camelCase (sou maluco e misturo os dois dependendo do contexto :D)
         res.json({
             is_correct: isCorrect,

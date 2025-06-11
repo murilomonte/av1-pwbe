@@ -15,7 +15,6 @@ class Answer {
         let parameters = answersList;
 
         let answerResult = await pool.query(answerQuery, [ JSON.stringify(parameters) ]);
-        console.log(answerResult.body[0]);
     }
 }
 
