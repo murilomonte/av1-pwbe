@@ -1,0 +1,7 @@
+<main class="main-ranking">
+    <ul>
+        <% for (let i = 0; i < ranking.length; i++) {%>
+            <li>Nome: <%- ranking[i].name %>; Acertos: <%- ranking[i].correct_answers %>; Erros: <%- ranking[i].wrong_answers %></li>
+        <% } %>
+    </ul>
+</main>

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const gameContoller = require('../controllers/game_contoller.js');
+const rankingController = require('../controllers/ranking_controller.js');
 
 /* / (get) */
 router.get('/', (req, res) => {
@@ -22,8 +23,6 @@ router.get('/question', gameContoller.getQuestion);
 router.post('/question', gameContoller.answerQuestion);
 
 /* /ranking (get) */
-router.get('/ranking', (req, res) => {
-    res.send('ranking')
-});
+router.get('/ranking', rankingController.getRanking);
 
 module.exports = router;
