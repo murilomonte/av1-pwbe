@@ -42,6 +42,17 @@ CREATE TABLE public.Answers (
         REFERENCES public.Alternatives (id)
 );
 
+CREATE VIEW user_ranking AS
+SELECT 
+  u.name,
+  COUNT(a.id) AS total_answers,
+  SUM(CASE WHEN a.is_correct THEN 1 ELSE 0 END) AS correct_answers,
+  SUM(CASE WHEN NOT a.is_correct THEN 1 ELSE 0 END) AS wrong_answers
+FROM Users u
+JOIN Answers a ON a.user_fk = u.id
+GROUP BY u.name
+ORDER BY correct_answers DESC;
+
 -- Perguntas
 INSERT INTO public.Questions (id, description) VALUES
 (1, 'Qual é a capital do Brasil?'),

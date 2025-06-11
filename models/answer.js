@@ -1,18 +1,26 @@
-let answer = [
-
-];
+const pool = require('../db/database.js');
 
 class Answer {
-    constructor(id, user_id, question_id, alternative_id, is_correct) {
-        this.id = id;
-        this.user_id = user_id;
-        this.question_id = question_id;
-        this.alternative_id = alternative_id;
-        this.is_correct = is_correct;
-    }
+    // responde várias perguntas
+    async answerQuestions(answersList) {
+        try {
+            // https://github.com/brianc/node-postgres/issues/1644#issuecomment-595231696
 
-    // responde uma pergunta
-    answerQuestion() {
-        
+            const answerQuery = `INSERT INTO 
+            answers(user_fk, question_fk, alternative_fk, is_correct) 
+        SELECT 
+            user_fk, question_fk, alternative_fk, is_correct 
+        FROM 
+            jsonb_to_recordset($1::jsonb) AS t (user_fk INT, question_fk INT, alternative_fk INT, is_correct BOOLEAN)`;
+
+            let parameters = answersList;
+
+            let answerResult = await pool.query(answerQuery, [JSON.stringify(parameters)]);
+            return answerResult.rowCount;
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
+
+module.exports = Answer

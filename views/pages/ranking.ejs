@@ -1,0 +1,17 @@
+<main class="main-ranking">
+    <h1>Melhores jogadores</h1>
+    <ul class="ranking-list">
+        <% for (let i=0; i < ranking.length; i++) {%>
+            <li class="ranking-item">
+                <span class="player-name">
+                    <%- ranking[i].name %>
+                </span>
+                <span class="player-score">
+                    Acertos: <%- ranking[i].correct_answers %>
+                    |
+                    Erros: <%- ranking[i].wrong_answers %>
+                </span>
+            </li>
+            <% } %>
+    </ul>
+</main>

@@ -10,5 +10,14 @@
 /* status */
 @import url('status/status.css');
 
+/* ranking */
+@import url('ranking/ranking.css');
+
 /* pergunta */
 @import url('pergunta/pergunta.css');
+
+/* error */
+@import url('error/error.css');
+
+/* end */
+@import url('end/end.css');
