@@ -35,13 +35,6 @@ class Ranking {
         return { ok: false, errors: this.errors };
     }
 
-    async getRanking() {
-        // TODO: adicionar verificações
-        const rankingQuery = 'SELECT * from user_ranking';
-        let rankingResult = await pool.query(rankingQuery);
-        return rankingResult.rows;
-    }
-
     getRanking() {
         return new Promise((resolve, reject) => {
             const rankingQuery = 'SELECT * from user_ranking';
