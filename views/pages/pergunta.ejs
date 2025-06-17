@@ -2,16 +2,16 @@
     <section class="pergunta">
         <h1>Pergunta</h1>
         <p class="pergunta-texto">
-            <%= question.description %>
+            <%= question.data.description %>
         </p>
         <form class="pergunta-respostas" id="pergunta-form">
-            <input type="hidden" name="question_id" value="<%- question.id %>">
-            <% for (let i=0; i < question.alternatives.length; i++) {%>
-                <label for="in<%- question.alternatives[i].id %>" class="resposta-item"
-                    id="res<%- question.alternatives[i].id %>">
-                    <input type="radio" name="alternative_id" value="<%- question.alternatives[i].id %>"
-                        id="in<%- question.alternatives[i].id %>" required>
-                    <%= question.alternatives[i].description %>
+            <input type="hidden" name="question_id" value="<%- question.data.id %>">
+            <% for (let i=0; i < question.data.alternatives.length; i++) {%>
+                <label for="in<%- question.data.alternatives[i].data.id %>" class="resposta-item"
+                    id="res<%- question.data.alternatives[i].data.id %>">
+                    <input type="radio" name="alternative_id" value="<%- question.data.alternatives[i].data.id %>"
+                        id="in<%- question.data.alternatives[i].data.id %>" required>
+                    <%= question.data.alternatives[i].data.description %>
                 </label>
                 <% } %>
                 <button type="submit" class="main-button" id="answer-button">Responder</button>

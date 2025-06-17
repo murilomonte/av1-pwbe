@@ -1,62 +1,60 @@
 const pool = require('../db/database.js');
-
-/**
- * Classe que representa uma questão
- */
+const { errorToString } = require('../utils/error_string.js');
 class Question {
-    async getQuestion(qnt = 1) {
-        try {
-            if (!Number.isInteger(qnt)) {
-                throw new Error('qnt precisa ser um número inteiro.');
-            }
-
-            if (qnt < 1) {
-                throw new Error('qnt precisa ser maior que 0.');
-            }
-
-            let question_query = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT $1';
-            let question_result = await pool.query(question_query, [qnt])
-            let question_list = [];
-
-            for (let i in question_result.rows) {
-                let question = question_result.rows[i];
-                let alternatives = await this.getAlternativesById(question.id);
-
-                question_list.push(this.toMap(question.id, question.description, alternatives))
-            }
-            // return { sucess: true, result: question_list };
-            return question_list;
-        } catch (error) {
-            console.log(error);
-        };
+    constructor(data) {
+        this.data = data;
+        this.errors = [];
     }
 
-    async getAlternativesById(question_id) {
-        try {
-            if (!Number.isInteger(question_id)) {
-                throw new Error('question id precisa ser um número inteiro.');
-            }
-
-            if (question_id < 0) {
-                throw new Error('question_id precisa ser maior que 0.');
-            }
-
-            // Rertorna as alternativas da questão
-            const alternative_query = 'SELECT * FROM Alternatives as a WHERE a.question_fk = $1'
-            let alternatives_result = await pool.query(alternative_query, [question_id])
-            return alternatives_result.rows;
-        } catch (error) {
-            console.log(error);
-        };
-    }
-
-    toMap(id, description, alternatives) {
-        let questionObject = {
-            id: id,
-            description: description,
-            alternatives: alternatives
+    // Pega uma lista de question e retorna uma lista de Question já validaddos
+    // para cada question criado, valida os dados
+    getQuestions(quantity = 1) {
+        if (!Number.isInteger(quantity) || quantity < 1) {
+            // Erro de implementação
+            throw Error('Invalid number of questions.');
         }
-        return questionObject
+
+        return new Promise((resolve, reject) => {
+            let questionQuery = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT $1';
+            let questionList = [];
+
+            pool.query(questionQuery, [quantity], (error, result) => {
+                if (error) {
+                    reject('Erro ao obter as questões:', error);
+                }
+
+                for (let i in result.rows) {
+                    let question = new Question({
+                        id: Number(result.rows[i].id),
+                        description: String(result.rows[i].description),
+                        alternatives: []
+                    });
+                    
+                    let validate = question.validate();
+
+                    if (!validate.ok) {
+                        reject('Erro ao validar a questão:', errorToString(question.errors));
+                    } else {
+                        questionList.push(question);
+                    }
+                }
+                resolve(questionList);
+            });
+        });
+    }
+
+    // Valida os campos de this.data
+    validate() {
+        let description = this.data.description;
+
+        if (typeof description != 'string') {
+            this.errors.push('Formato de description inválido.');
+        }
+
+        if (this.errors.length == 0) {
+            return { ok: true, errors: [] };
+        }
+        return { ok: false, errors: this.errors };
     }
 }
 
