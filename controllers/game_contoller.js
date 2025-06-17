@@ -1,20 +1,10 @@
 const Question = require('../models/question.js');
 const User = require('../models/user.js');
 const Answer = require('../models/answer.js');
+const Alternative = require('../models/alternative.js');
 
-let player = {
-    id: undefined,
-    name: undefined,
-    score: {
-        questions: 0,
-        correct: 0,
-        wrong: 0
-    },
-    answers: []
-}
-
+let player = {}
 let questions = [];
-
 let answeredQuestions = [];
 
 const start = async function (req, res) {
@@ -35,13 +25,19 @@ const start = async function (req, res) {
         answeredQuestions = [];
 
         // Povoa a lista de questões
+        // TODO: usar .then ao invés de await
         const question = new Question();
-        let questionList = await question.getQuestion(10);
+        let questionList = await question.getQuestions(2);
+
+        const alternative = new Alternative();
 
         for (let i in questionList) {
-            // Adiciona toda as questões à lista
-            questions.push(questionList[i]);
+            let alternativeList = await alternative.getAlternativesById(questionList[i].data.id);
+            questionList[i].data.alternatives = alternativeList;
         }
+
+        // Adicionando todas as questões à lista
+        questions = questionList;
 
         // Redireciona para uma pergunta, enviando o objeto do usuário e a questão com suas respectivas alternativas
         res.redirect('question');
@@ -57,23 +53,35 @@ const end = async function (req, res) {
     try {
         // Cria um novo user com o nome passado
         let userName = req.body.userName;
-        const user = new User();
+        const user = new User({
+            name: userName,
+        });
 
-        let userData = await user.create(userName);
+        // Cria o user
+        await user.create();
 
         // Adiciona o nome do usuário ao objeto e seu respectivo id
-        player.id = userData.id;
-        player.name = userData.name;
+        player.id = user.data.id;
+        player.name = user.data.name;
 
         for (let i in player.answers) {
             player.answers[i].user_fk = player.id;
         }
 
-        // Salva as respostas no banco para o respectivo usuário
-        const answer = new Answer();
-        let anwersData = await answer.answerQuestions(player.answers);
+        for (let i in player.answers) {
+            // Instancia todas as questions
+            let answer = new Answer({
+                user_fk: Number(player.answers[i].user_fk),
+                question_fk: Number(player.answers[i].question_fk),
+                alternative_fk: Number(player.answers[i].alternative_fk),
+                is_correct: player.answers[i].is_correct
+            });
 
-        // Redireciona para uma pergunta, enviando o objeto do usuário e a questão com suas respectivas alternativas
+            // Responde
+            await answer.answerQuestion();
+        }
+
+        // Redireciona ao ranking
         res.redirect('ranking');
     } catch (error) {
         res.render('pages/error', {
@@ -108,15 +116,15 @@ const answerQuestion = function (req, res) {
         let isCorrect = false;
         let correctAlternative = undefined;
 
-        let question = answeredQuestions.find(item => item.id == questionId);
+        let question = answeredQuestions.find(item => item.data.id == questionId);
 
         if (!question) {
-            throw new Error('Question not found');
+            throw new Error('Questão não encontrada.');
         }
 
-        for (let i = 0; i < question.alternatives.length; i++) {
-            if (question.alternatives[i].is_correct) {
-                correctAlternative = question.alternatives[i].id;
+        for (let i = 0; i < question.data.alternatives.length; i++) {
+            if (question.data.alternatives[i].data.is_correct) {
+                correctAlternative = question.data.alternatives[i].data.id;
             }
         }
 
@@ -137,7 +145,6 @@ const answerQuestion = function (req, res) {
 
         player.score.questions++;
 
-        // TODO: mudar variáveis para camelCase (sou maluco e misturo os dois dependendo do contexto :D)
         res.json({
             is_correct: isCorrect,
             selected_alternative: alternativeId,

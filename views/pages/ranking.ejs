@@ -4,12 +4,12 @@
         <% for (let i=0; i < ranking.length; i++) {%>
             <li class="ranking-item">
                 <span class="player-name">
-                    <%- ranking[i].name %>
+                    <%- ranking[i].data.name %>
                 </span>
                 <span class="player-score">
-                    Acertos: <%- ranking[i].correct_answers %>
+                    Acertos: <%- ranking[i].data.correct_answers %>
                     |
-                    Erros: <%- ranking[i].wrong_answers %>
+                    Erros: <%- ranking[i].data.wrong_answers %>
                 </span>
             </li>
             <% } %>
